@@ -1,0 +1,6 @@
+- Shared UI components (navbar, footer, hero, cards, forms) are built from reusable BEM-style class names defined once in `style.css` and reused across all pages.
+- JavaScript behavior is guarded by `if (element)` existence checks before attaching event listeners, allowing the same script to run safely on every page without errors.
+- User feedback is delivered through a centralized `showToast(msg, type)` helper that renders a fixed-position toast with success/error classes instead of inline alerts.
+- Responsive behavior is handled via two media-query breakpoints (968px and 768px) that progressively collapse grids and reveal the hamburger menu rather than per-component overrides.
+- Scroll-triggered animations use a single `IntersectionObserver` instance that adds a `.visible` class to elements marked with the `.animate-on-scroll` class.
+- Form submissions are intercepted with `e.preventDefault()`, validated client-side, and simulated asynchronously with `setTimeout` to mimic network latency before showing a success toast.

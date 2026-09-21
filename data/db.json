@@ -1,0 +1,113 @@
+{
+  "users": [
+    {
+      "id": "mtl80qlxo84oq",
+      "name": "Natasha Kawisha",
+      "email": "natashakawisha@gmail.com",
+      "password": "$2a$10$OgEmKDr0VQ9rGz9wmLEUPeSwUxnltrSfZjAaTF.i5m7xMoqg4m6AG",
+      "role": "learner",
+      "createdAt": "2026-09-03T07:45:58.965Z"
+    },
+    {
+      "id": "mu6lybm2hb8ux",
+      "name": "ewedfgyuhedfg",
+      "email": "urbancollectionzm@gmail.com",
+      "password": "$2a$10$3gQhbsL2mSNE/AvRran3XOe4gV9CrwTW7/hPmcuffBb.jxhJ4T052",
+      "role": "learner",
+      "createdAt": "2026-09-18T06:59:10.538Z"
+    }
+  ],
+  "progress": [
+    {
+      "userId": "mtl80qlxo84oq",
+      "moduleId": 1,
+      "status": "not_started",
+      "updatedAt": "2026-09-21T10:11:22.401Z"
+    },
+    {
+      "userId": "mtl80qlxo84oq",
+      "moduleId": 2,
+      "status": "not_started",
+      "updatedAt": "2026-09-21T10:11:24.739Z"
+    },
+    {
+      "userId": "mtl80qlxo84oq",
+      "moduleId": 3,
+      "status": "not_started",
+      "updatedAt": "2026-09-21T10:11:26.513Z"
+    },
+    {
+      "userId": "mtl80qlxo84oq",
+      "moduleId": 4,
+      "status": "not_started",
+      "updatedAt": "2026-09-21T10:11:28.315Z"
+    },
+    {
+      "userId": "mtl80qlxo84oq",
+      "moduleId": 8,
+      "status": "not_started",
+      "updatedAt": "2026-09-21T10:11:36.676Z"
+    },
+    {
+      "userId": "mtl80qlxo84oq",
+      "moduleId": 7,
+      "status": "not_started",
+      "updatedAt": "2026-09-21T10:11:34.330Z"
+    },
+    {
+      "userId": "mtl80qlxo84oq",
+      "moduleId": 6,
+      "status": "not_started",
+      "updatedAt": "2026-09-21T10:11:32.329Z"
+    },
+    {
+      "userId": "mtl80qlxo84oq",
+      "moduleId": 5,
+      "status": "not_started",
+      "updatedAt": "2026-09-21T10:11:30.314Z"
+    }
+  ],
+  "messages": [
+    {
+      "id": "mtk24az06dm8c",
+      "name": "natasha",
+      "email": "urbancollectionzm@gmail.com",
+      "subject": "general",
+      "message": "hey is it working",
+      "createdAt": "2026-09-02T12:13:01.452Z",
+      "read": false
+    },
+    {
+      "id": "mtl5r7m15aof4",
+      "name": "Agnes",
+      "email": "urbancollectionzm@gmail.com",
+      "subject": "training",
+      "message": "hey has it worked",
+      "createdAt": "2026-09-03T06:42:35.209Z"
+    },
+    {
+      "id": "mtl63uede33qc",
+      "name": "agnes",
+      "email": "urbancollectionzm@gmail.com",
+      "subject": "facilitator",
+      "message": "hey has it worked?",
+      "createdAt": "2026-09-03T06:52:24.613Z"
+    },
+    {
+      "id": "mtlkwe6kl24be",
+      "name": "Natasha",
+      "email": "asdfghjklsdfghjkl@sdfghjk.com",
+      "subject": "training",
+      "message": "wsedruh,kop.lsedrftgyunhjmik,l",
+      "createdAt": "2026-09-03T13:46:31.244Z"
+    },
+    {
+      "id": "mu5nh77l7uz8k",
+      "name": "Natasha",
+      "email": "natashakawisha@gmail.com",
+      "subject": "training",
+      "message": "qwryuiadfhjksdghjkl",
+      "createdAt": "2026-09-17T14:54:04.737Z"
+    }
+  ]
+}

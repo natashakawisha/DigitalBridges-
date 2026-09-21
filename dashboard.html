@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Digital Bridges Zambia</title>
+  <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo"><div class="logo-icon"><svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div><span class="logo-text">Digital Bridges</span><span class="logo-sub">Zambia</span></div></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="learning.html">Learning</a></li><li><a href="faq.html">FAQ</a></li><li><a href="contact.html">Contact</a></li><!--AUTH_NAV-->
+      </ul>
+      <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <section class="page-banner" style="padding-bottom:2rem;">
+    <span class="overline" style="display:inline-block;background:rgba(37,99,235,0.1);color:var(--primary);padding:0.3rem 1rem;border-radius:50px;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:1rem;">My Account</span>
+    <h1 id="dashGreeting">Dashboard</h1>
+    <p>Track your learning progress and manage your account</p>
+  </section>
+
+  <!-- Stats Overview -->
+  <div class="stats-bar">
+    <div class="stats-grid">
+      <div class="stat-item"><h3 id="statCompleted">0</h3><p>Modules Completed</p></div>
+      <div class="stat-item"><h3 id="statInProgress">0</h3><p>In Progress</p></div>
+      <div class="stat-item"><h3 id="statNotStarted">8</h3><p>Not Started</p></div>
+      <div class="stat-item"><h3 id="statPercent">0%</h3><p>Overall Progress</p></div>
+    </div>
+  </div>
+
+  <!-- Progress Section -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="overline">My Learning</span>
+        <h2>Training Module Progress</h2>
+        <p>Track your progress across all 8 digital literacy modules. Click to update your status.</p>
+      </div>
+      <div id="progressModules" class="modules-grid"></div>
+    </div>
+  </section>
+
+  <!-- Profile Section -->
+  <section class="section section-alt">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="overline">Account</span>
+        <h2>Profile Settings</h2>
+        <p>Update your personal information and account settings</p>
+      </div>
+      <div style="max-width:600px;margin:0 auto;">
+        <div class="contact-form-card animate-on-scroll">
+          <form id="profileForm">
+            <div class="form-group">
+              <label for="profileName">Full Name</label>
+              <div class="input-wrapper">
+                <span class="input-icon"><svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                <input type="text" id="profileName" placeholder="Your full name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="profileEmail">Email Address</label>
+              <div class="input-wrapper">
+                <span class="input-icon"><svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+                <input type="email" id="profileEmail" placeholder="you@example.com">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;margin-bottom:1.5rem;">Update Profile</button>
+          </form>
+
+          <div class="divider">Change Password</div>
+          <form id="passwordForm">
+            <div class="form-group">
+              <label for="currentPassword">Current Password</label>
+              <input type="password" id="currentPassword" placeholder="Enter current password">
+            </div>
+            <div class="form-group">
+              <label for="newPassword">New Password</label>
+              <input type="password" id="newPassword" placeholder="At least 6 characters">
+            </div>
+            <div class="form-group">
+              <label for="confirmNewPassword">Confirm New Password</label>
+              <input type="password" id="confirmNewPassword" placeholder="Repeat new password">
+            </div>
+            <button type="submit" class="btn btn-accent" style="width:100%;">Change Password</button>
+          </form>
+        </div>
+
+        <div style="text-align:center;margin-top:2rem;">
+          <p style="color:var(--text-muted);font-size:0.85rem;">Account created: <span id="memberSince">-</span></p>
+          <p style="color:var(--text-muted);font-size:0.85rem;">Role: <span id="userRole">-</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><h3>Digital Bridges Zambia</h3><p>Developing accessible, practical, and locally relevant digital literacy training content for underserved communities in Zambia.</p></div>
+      <div class="footer-links"><h4>Quick Links</h4><a href="index.html">Home</a><a href="about.html">About</a><a href="learning.html">Learning</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a></div>
+      <div class="footer-links"><h4>Resources</h4><a href="dashboard.html">Dashboard</a><a href="learning.html">Training Modules</a><a href="about.html">Our Approach</a><a href="contact.html">Get Involved</a></div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2026 Digital Bridges Zambia. All rights reserved.</p></div>
+  </footer>
+  <div class="toast" id="toast"></div>
+  <script src="js/script.js"></script>
+</body>
+</html>

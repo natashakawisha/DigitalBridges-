@@ -1,0 +1,1 @@
+None — the site runs directly from the filesystem by opening any `.html` file in a browser; no build, install, or environment variables are required.

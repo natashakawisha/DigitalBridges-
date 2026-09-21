@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Modules - Digital Bridges Zambia</title>
+  <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo"><div class="logo-icon"><svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div><span class="logo-text">Digital Bridges</span><span class="logo-sub">Zambia</span></div></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="learning.html" class="active">Learning</a></li><li><a href="faq.html">FAQ</a></li><li><a href="contact.html">Contact</a></li><!--AUTH_NAV-->
+      </ul>
+      <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <section class="page-banner">
+    <span class="overline" style="display:inline-block;background:rgba(37,99,235,0.1);color:var(--primary);padding:0.3rem 1rem;border-radius:50px;font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:1rem;">Training Content</span>
+    <h1>Digital Literacy Learning Modules</h1>
+    <p>Eight comprehensive modules covering everything from device basics to digital entrepreneurship, designed for Zambian communities.</p>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="overline">Curriculum</span>
+        <h2>Training Modules</h2>
+        <p>Each module features practical exercises, visual content, and community-friendly language. Click any module to open its full lesson page.</p>
+      </div>
+
+      <div id="moduleList" class="module-list"></div>
+
+      <div class="view-more-wrap" id="viewMoreWrap">
+        <button type="button" class="btn btn-outline" id="viewMoreBtn">
+          View More Modules
+          <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="overline">Resources</span>
+        <h2>What We Produce</h2>
+        <p>Comprehensive learning resources designed for both facilitators and learners.</p>
+      </div>
+      <div class="modules-grid">
+        <div class="module-card animate-on-scroll"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><h3>Structured Curriculum</h3><p>A complete digital literacy curriculum across 8 modules with clear learning outcomes.</p></div>
+        <div class="module-card animate-on-scroll"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><h3>Training Manuals</h3><p>Detailed manuals and facilitator guides for educators and community trainers.</p></div>
+        <div class="module-card animate-on-scroll"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><h3>Interactive Modules</h3><p>Digital learning modules with exercises, quizzes, and interactive content.</p></div>
+        <div class="module-card animate-on-scroll"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><h3>Infographics &amp; Visuals</h3><p>Visual awareness materials for easy understanding.</p></div>
+        <div class="module-card animate-on-scroll"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div><h3>Educational Videos</h3><p>Short videos and animations explaining key concepts.</p></div>
+        <div class="module-card animate-on-scroll"><div class="icon-circle"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></div><h3>Assessment Tools</h3><p>Evaluation tools to measure learning progress and impact.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="text-align:center;">
+    <div class="section-inner">
+      <h2 style="font-size:2rem;font-weight:800;margin-bottom:1rem;">Ready to Start Learning?</h2>
+      <p style="color:var(--text-muted);max-width:500px;margin:0 auto 2rem;font-size:1.1rem;">Sign in to access training modules, track your progress, and earn completion certificates.</p>
+      <a href="login.html" class="btn btn-primary" style="font-size:1.05rem;padding:1rem 2.5rem;">Get Started Now</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><h3>Digital Bridges Zambia</h3><p>Developing accessible, practical, and locally relevant digital literacy training content for underserved communities in Zambia.</p></div>
+      <div class="footer-links"><h4>Quick Links</h4><a href="index.html">Home</a><a href="about.html">About</a><a href="learning.html">Learning</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a></div>
+      <div class="footer-links"><h4>Resources</h4><a href="login.html">Login</a><a href="learning.html">Training Modules</a><a href="about.html">Our Approach</a><a href="contact.html">Get Involved</a></div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2026 Digital Bridges Zambia. All rights reserved.</p></div>
+  </footer>
+  <script src="js/modules-data.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>

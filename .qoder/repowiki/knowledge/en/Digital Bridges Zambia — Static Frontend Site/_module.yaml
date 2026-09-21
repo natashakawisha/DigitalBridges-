@@ -1,0 +1,14 @@
+schema_version: 1
+module_path: ""
+title: Digital Bridges Zambia — Static Frontend Site
+scope:
+    - CSS/
+    - js/
+    - about.html
+    - contact.html
+    - index.html
+    - learning.html
+    - login.html
+source_files: []
+depends_on: []
+related_to: []
