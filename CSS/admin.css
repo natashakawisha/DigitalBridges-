@@ -116,6 +116,29 @@
 .back-link:hover { color: var(--primary); }
 .back-link svg { width: 15px; height: 15px; }
 
+/* ===== CMS: Pages & Modules editors ===== */
+.cms-page-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+.cms-page-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); transition: var(--transition); display: block; }
+.cms-page-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.cms-page-card h3 { color: var(--primary-dark); font-size: 1.1rem; margin-bottom: 0.3rem; }
+.cms-page-card p { color: var(--text-muted); font-size: 0.85rem; }
+
+.cms-block-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.9rem; flex-wrap: wrap; }
+.cms-block-head h2 { font-size: 1.1rem; color: var(--primary-dark); margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.cms-key { display: inline-block; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace; font-size: 0.75rem; background: #f1f5f9; color: var(--text-muted); border: 1px solid var(--border); border-radius: 6px; padding: 0.1rem 0.5rem; }
+.cms-hint { font-size: 0.8rem; color: var(--text-muted); }
+.cms-block .form-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+.cms-block .form-actions .cms-hint { margin-left: auto; }
+
+textarea.cms-html { width: 100%; min-height: 260px; resize: vertical; padding: 0.9rem 1rem; border: 1px solid var(--border); border-radius: 8px; background: #0f172a; color: #e2e8f0; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace; font-size: 0.85rem; line-height: 1.6; tab-size: 2; margin-bottom: 0.9rem; }
+textarea.cms-html:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.18); }
+textarea.cms-default-src { display: none; }
+
+iframe.cms-preview { width: 100%; height: 540px; border: 1px solid var(--border); border-radius: 8px; background: #fff; margin-top: 0.5rem; }
+
+.cms-field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.admin-card > .cms-block { padding-top: 1.25rem; margin-top: 1.25rem; border-top: 1px solid var(--border); }
+
 /* Responsive */
 @media (max-width: 768px) {
   .admin-container { padding: 1.25rem 1rem; }
@@ -128,4 +151,5 @@
   .admin-topbar { padding: 0 1rem; }
   .admin-topbar .brand .sub { display: none; }
   .admin-topbar nav a:not(.logout-btn) { display: none; }
+  .cms-field-grid { grid-template-columns: 1fr; }
 }

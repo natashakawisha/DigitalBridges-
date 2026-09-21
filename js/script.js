@@ -511,10 +511,13 @@ if (moduleListEl && window.MODULES_DATA) {
   let expanded = false;
 
   const cardHtml = (mod, hidden) => {
-    const topics = mod.topics.slice(0, 4).map(t =>
+    const wrapperOpen = '<a class="module-list-card' + (hidden ? ' module-hidden' : '') + '" href="module.html?id=' + mod.id + '">';
+    // CMS override: use the module's raw listCardHtml when set, else structured markup.
+    if (mod.listCardHtml && mod.listCardHtml.trim()) return wrapperOpen + mod.listCardHtml + '</a>';
+    const topics = (mod.topics || []).slice(0, 4).map(t =>
       '<span class="topic-chip"><span class="topic-icon">' + iconSvg(t.icon) + '</span><span>' + escHtml(t.label) + '</span></span>'
     ).join('');
-    return '<a class="module-list-card' + (hidden ? ' module-hidden' : '') + '" href="module.html?id=' + mod.id + '">' +
+    return wrapperOpen +
       '<div class="module-list-top">' +
         '<div class="module-detail-number">' + escHtml(mod.number) + '</div>' +
         '<div class="module-list-title"><h3>' + escHtml(mod.title) + '</h3><p class="module-subtitle">' + escHtml(mod.subtitle) + '</p></div>' +
@@ -560,13 +563,17 @@ if (homeModuleGrid && window.MODULES_DATA) {
   const HOME_INITIAL_VISIBLE = 2;
   let homeExpanded = false;
 
-  const homeCardHtml = (mod, hidden) =>
-    '<a class="module-card home-module-card' + (hidden ? ' home-module-hidden' : '') + '" href="module.html?id=' + mod.id + '">' +
+  const homeCardHtml = (mod, hidden) => {
+    const wrapperOpen = '<a class="module-card home-module-card' + (hidden ? ' home-module-hidden' : '') + '" href="module.html?id=' + mod.id + '">';
+    // CMS override: use the module's raw homeCardHtml when set, else structured markup.
+    if (mod.homeCardHtml && mod.homeCardHtml.trim()) return wrapperOpen + mod.homeCardHtml + '</a>';
+    return wrapperOpen +
       '<div class="module-number">' + escHtml(mod.number) + '</div>' +
       '<h3>' + escHtml(mod.title) + '</h3>' +
       '<p>' + escHtml(mod.subtitle) + '</p>' +
-      '<div class="module-topics">' + mod.topics.slice(0, 3).map(t => '<span>' + escHtml(t.label) + '</span>').join('') + '</div>' +
+      '<div class="module-topics">' + (mod.topics || []).slice(0, 3).map(t => '<span>' + escHtml(t.label) + '</span>').join('') + '</div>' +
     '</a>';
+  };
 
   const renderHome = () => {
     homeModuleGrid.innerHTML = data.map((mod, i) => homeCardHtml(mod, !homeExpanded && i >= HOME_INITIAL_VISIBLE)).join('');
@@ -608,11 +615,11 @@ if (modulePageEl && window.MODULES_DATA) {
     document.title = mod.title + ' - Digital Bridges Zambia';
     const prev = data[idx - 1], next = data[idx + 1];
 
-    const topics = mod.topics.map(t =>
+    const topics = (mod.topics || []).map(t =>
       '<div class="topic-chip"><span class="topic-icon">' + iconSvg(t.icon) + '</span><span>' + escHtml(t.label) + '</span></div>').join('');
-    const objectives = mod.objectives.map(o =>
+    const objectives = (mod.objectives || []).map(o =>
       '<li class="objective-row">' + iconSvg('check', 'icon icon-sm obj-check') + '<span>' + escHtml(o) + '</span></li>').join('');
-    const lessons = mod.lessons.map((l, i) =>
+    const lessons = (mod.lessons || []).map((l, i) =>
       '<div class="lesson-item"><div class="lesson-num">' + (i + 1) + '</div><div><h4>' + escHtml(l.title) + '</h4><p>' + escHtml(l.summary) + '</p></div></div>').join('');
 
     modulePageEl.innerHTML =
@@ -623,16 +630,19 @@ if (modulePageEl && window.MODULES_DATA) {
         '<div class="module-banner-meta">' +
           '<span class="module-meta-pill light">' + iconSvg('clock') + escHtml(mod.duration) + '</span>' +
           '<span class="module-meta-pill light">' + iconSvg('target') + escHtml(mod.level) + '</span>' +
-          '<span class="module-meta-pill light">' + iconSvg('book') + mod.lessons.length + ' lessons</span>' +
+          '<span class="module-meta-pill light">' + iconSvg('book') + (mod.lessons || []).length + ' lessons</span>' +
         '</div>' +
       '</section>' +
       '<section class="section"><div class="section-inner" style="max-width:900px;">' +
-        '<div class="module-body-block"><h2>About this module</h2><p>' + escHtml(mod.description) + '</p></div>' +
-        '<div class="module-body-block"><h2>What you will learn</h2><ul class="objectives-check">' + objectives + '</ul></div>' +
-        '<div class="module-body-block"><h2>Topics covered</h2><div class="module-topics-list static">' + topics + '</div></div>' +
-        '<div class="module-body-block"><h2>Lessons</h2><div class="lessons-list">' + lessons + '</div></div>' +
-        '<div class="module-cta"><a href="login.html" class="btn btn-primary">Start this module</a>' +
-          '<span>Sign in to track your progress and mark this module complete.</span></div>' +
+        // CMS override: use the module's raw bodyHtml when set, else structured body.
+        // The banner above and the pager below are always generated.
+        ((mod.bodyHtml && mod.bodyHtml.trim()) ? mod.bodyHtml :
+          '<div class="module-body-block"><h2>About this module</h2><p>' + escHtml(mod.description) + '</p></div>' +
+          '<div class="module-body-block"><h2>What you will learn</h2><ul class="objectives-check">' + objectives + '</ul></div>' +
+          '<div class="module-body-block"><h2>Topics covered</h2><div class="module-topics-list static">' + topics + '</div></div>' +
+          '<div class="module-body-block"><h2>Lessons</h2><div class="lessons-list">' + lessons + '</div></div>' +
+          '<div class="module-cta"><a href="login.html" class="btn btn-primary">Start this module</a>' +
+            '<span>Sign in to track your progress and mark this module complete.</span></div>') +
         '<div class="module-pager">' +
           (prev ? '<a class="pager-link prev" href="module.html?id=' + prev.id + '">' + iconSvg('arrowLeft', 'icon icon-sm') + '<span><small>Previous</small>' + escHtml(prev.title) + '</span></a>' : '<span></span>') +
           (next ? '<a class="pager-link next" href="module.html?id=' + next.id + '"><span><small>Next</small>' + escHtml(next.title) + '</span>' + iconSvg('arrowRight', 'icon icon-sm') + '</a>' : '<span></span>') +

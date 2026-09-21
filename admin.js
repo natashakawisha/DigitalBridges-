@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
 module.exports = function createAdminRouter(opts) {
-  const { loadDB, saveDB, transporter, ADMIN_EMAIL, ADMIN_PASSWORD_HASH, EMAIL_USER } = opts;
+  const { loadDB, saveDB, transporter, ADMIN_EMAIL, ADMIN_PASSWORD_HASH, EMAIL_USER, content } = opts;
   const router = express.Router();
 
   // ----- Login rate limiting -----
@@ -134,6 +134,8 @@ module.exports = function createAdminRouter(opts) {
         </a>
         <nav>
           <a href="/admin/messages" class="${activeNav === 'messages' ? 'active' : ''}">Messages</a>
+          <a href="/admin/pages" class="${activeNav === 'pages' ? 'active' : ''}">Pages</a>
+          <a href="/admin/modules" class="${activeNav === 'modules' ? 'active' : ''}">Modules</a>
           <a href="/" target="_blank" rel="noopener">View site</a>
           <form method="POST" action="/admin/logout" style="display:inline;">
             <input type="hidden" name="_csrf" value="${esc(csrf)}">
@@ -297,6 +299,266 @@ ${body}
           </form>
         </div>
       </div>`;
+  }
+
+  // ===== CMS: module markup helpers (mirror js/script.js structured render) =====
+  const MICON = {
+    device: '<rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',
+    computer: '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>',
+    globe: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+    chat: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    lock: '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    alert: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+    shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+    eye: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+    check: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+    mail: '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>',
+    video: '<polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>',
+    users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    search: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+    share: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>',
+    book: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+    card: '<rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>',
+    clipboard: '<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>',
+    edit: '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>',
+    trending: '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+    tool: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+    cart: '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>',
+    heart: '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
+    clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+    arrowRight: '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+    arrowLeft: '<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>',
+    target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>'
+  };
+  function mIcon(name, cls) {
+    const inner = MICON[name] || MICON.check;
+    return '<svg class="' + (cls || 'icon icon-sm') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + inner + '</svg>';
+  }
+  function mEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+  function defaultHomeCard(m) {
+    return '<div class="module-number">' + mEsc(m.number) + '</div>' +
+      '<h3>' + mEsc(m.title) + '</h3>' +
+      '<p>' + mEsc(m.subtitle) + '</p>' +
+      '<div class="module-topics">' + (m.topics || []).slice(0, 3).map(t => '<span>' + mEsc(t.label) + '</span>').join('') + '</div>';
+  }
+  function defaultListCard(m) {
+    const topics = (m.topics || []).slice(0, 4).map(t =>
+      '<span class="topic-chip"><span class="topic-icon">' + mIcon(t.icon) + '</span><span>' + mEsc(t.label) + '</span></span>').join('');
+    return '<div class="module-list-top">' +
+        '<div class="module-detail-number">' + mEsc(m.number) + '</div>' +
+        '<div class="module-list-title"><h3>' + mEsc(m.title) + '</h3><p class="module-subtitle">' + mEsc(m.subtitle) + '</p></div>' +
+      '</div>' +
+      '<p class="module-list-desc">' + mEsc(m.description) + '</p>' +
+      '<div class="module-topics-list static">' + topics + '</div>' +
+      '<div class="module-list-foot">' +
+        '<span class="module-meta-pill">' + mIcon('clock') + mEsc(m.duration) + '</span>' +
+        '<span class="module-meta-pill">' + mEsc(m.level) + '</span>' +
+        '<span class="module-open-link">Open module ' + mIcon('arrowRight') + '</span>' +
+      '</div>';
+  }
+  function defaultBody(m) {
+    const topics = (m.topics || []).map(t => '<div class="topic-chip"><span class="topic-icon">' + mIcon(t.icon) + '</span><span>' + mEsc(t.label) + '</span></div>').join('');
+    const objectives = (m.objectives || []).map(o => '<li class="objective-row">' + mIcon('check', 'icon icon-sm obj-check') + '<span>' + mEsc(o) + '</span></li>').join('');
+    const lessons = (m.lessons || []).map((l, i) => '<div class="lesson-item"><div class="lesson-num">' + (i + 1) + '</div><div><h4>' + mEsc(l.title) + '</h4><p>' + mEsc(l.summary) + '</p></div></div>').join('');
+    return '<div class="module-body-block"><h2>About this module</h2><p>' + mEsc(m.description) + '</p></div>' +
+      '<div class="module-body-block"><h2>What you will learn</h2><ul class="objectives-check">' + objectives + '</ul></div>' +
+      '<div class="module-body-block"><h2>Topics covered</h2><div class="module-topics-list static">' + topics + '</div></div>' +
+      '<div class="module-body-block"><h2>Lessons</h2><div class="lessons-list">' + lessons + '</div></div>' +
+      '<div class="module-cta"><a href="login.html" class="btn btn-primary">Start this module</a>' +
+        '<span>Sign in to track your progress and mark this module complete.</span></div>';
+  }
+
+  // Client-side helpers shared by the Pages and Modules editors: live preview
+  // (sandboxed iframe using the site stylesheet) and "load current markup".
+  function cmsEditorScript() {
+    return `<script>
+    (function () {
+      function buildSrcdoc(kind, html) {
+        var wrap = html;
+        if (kind === 'home') wrap = '<div class="modules-grid"><a class="module-card home-module-card">' + html + '</a></div>';
+        else if (kind === 'list') wrap = '<div class="module-list"><a class="module-list-card">' + html + '</a></div>';
+        else if (kind === 'body') wrap = '<section class="section"><div class="section-inner" style="max-width:900px;">' + html + '</div></section>';
+        return '<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="/CSS/style.css"><style>body{background:#fff;padding:1rem;}</style></head><body>' + wrap + '</body></html>';
+      }
+      document.querySelectorAll('.cms-preview-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var box = btn.closest('.cms-block');
+          var ta = box.querySelector('textarea.cms-html');
+          var frame = box.querySelector('iframe.cms-preview');
+          if (!frame) return;
+          if (!frame.hidden) { frame.hidden = true; btn.textContent = 'Preview'; return; }
+          frame.srcdoc = buildSrcdoc(btn.getAttribute('data-preview') || 'block', ta.value);
+          frame.hidden = false; btn.textContent = 'Hide preview';
+        });
+      });
+      document.querySelectorAll('.cms-load-default').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var slot = btn.getAttribute('data-slot');
+          var src = document.querySelector('textarea.cms-default-src[data-slot="' + slot + '"]');
+          var ta = document.querySelector('textarea.cms-html[data-slot="' + slot + '"]');
+          if (src && ta) ta.value = src.value;
+        });
+      });
+    })();
+    </script>`;
+  }
+
+  // ----- Pages editor views -----
+  function pagesPickerPage(pages, csrf, flashMsg) {
+    const cards = pages.map(p => `
+        <a class="cms-page-card" href="/admin/pages/${esc(p.id)}">
+          <h3>${esc(p.label)}</h3>
+          <p>${p.blocks.length} editable block${p.blocks.length === 1 ? '' : 's'}</p>
+        </a>`).join('');
+    return `
+      <div class="admin-container">
+        ${alertBlock(flashMsg)}
+        <div class="admin-page-header">
+          <div><h1>Pages</h1><p>Edit the raw HTML blocks that make up each page. Changes go live immediately and can be reset per block.</p></div>
+        </div>
+        <div class="cms-page-grid">${cards}</div>
+      </div>`;
+  }
+
+  function pageBlocksPage(page, blocks, csrf, flashMsg) {
+    const urlHint = page.id === 'index' ? '/' : page.id === 'shared' ? 'every page (footer)' : '/' + page.id + '.html';
+    const items = blocks.map(b => {
+      const badge = b.custom ? '<span class="badge badge-new">Customized</span>' : '<span class="badge badge-read">Default</span>';
+      return `
+        <div class="admin-card cms-block">
+          <div class="cms-block-head">
+            <div><h2>${esc(b.label)} ${badge}</h2><code class="cms-key">${esc(b.key)}</code></div>
+            <button type="button" class="admin-btn admin-btn-outline admin-btn-sm cms-preview-btn" data-preview="block">Preview</button>
+          </div>
+          <form method="POST" action="/admin/pages/${esc(page.id)}/block">
+            <input type="hidden" name="_csrf" value="${esc(csrf)}">
+            <input type="hidden" name="key" value="${esc(b.key)}">
+            <textarea name="html" class="cms-html" spellcheck="false">${esc(b.html)}</textarea>
+            <div class="form-actions">
+              <button type="submit" class="admin-btn admin-btn-primary">Save block</button>
+              <button type="submit" formaction="/admin/pages/${esc(page.id)}/block/reset" class="admin-btn admin-btn-outline" onclick="return confirm('Reset this block to its default markup? Your saved HTML for this block will be discarded.');">Reset to default</button>
+              <span class="cms-hint">Raw HTML is applied exactly as written &mdash; preview before saving.</span>
+            </div>
+          </form>
+          <iframe class="cms-preview" title="Block preview" hidden></iframe>
+        </div>`;
+    }).join('');
+    return `
+      <div class="admin-container">
+        ${alertBlock(flashMsg)}
+        <a href="/admin/pages" class="back-link">${ICONS.back}<span>All pages</span></a>
+        <div class="admin-page-header">
+          <div><h1>${esc(page.label)}</h1><p>Served at <code>${esc(urlHint)}</code></p></div>
+        </div>
+        ${items}
+      </div>
+      ${cmsEditorScript()}`;
+  }
+
+  // ----- Modules editor views -----
+  function modulesListPage(modules, csrf, flashMsg) {
+    const rows = modules.length === 0
+      ? `<tr><td colspan="6"><div class="admin-empty">${ICONS.inbox}<h3>No modules yet</h3><p>Add your first training module.</p></div></td></tr>`
+      : modules.map(m => {
+        const slots = [];
+        if (m.homeCardHtml && m.homeCardHtml.trim()) slots.push('home');
+        if (m.listCardHtml && m.listCardHtml.trim()) slots.push('list');
+        if (m.bodyHtml && m.bodyHtml.trim()) slots.push('body');
+        const slotBadge = slots.length
+          ? slots.map(s => '<span class="badge badge-replied">' + s + '</span>').join(' ')
+          : '<span class="badge badge-read">structured</span>';
+        return `<tr>
+          <td data-label="#">${esc(m.number || m.id)}</td>
+          <td data-label="Title"><a href="/admin/modules/${esc(m.id)}" style="color:var(--primary-dark);font-weight:600;">${esc(m.title)}</a><div class="meta">${esc(m.subtitle || '')}</div></td>
+          <td data-label="Level">${esc(m.level || '')}</td>
+          <td data-label="Duration">${esc(m.duration || '')}</td>
+          <td data-label="Rendering">${slotBadge}</td>
+          <td data-label="Actions">
+            <div class="action-row">
+              <a class="admin-btn admin-btn-outline admin-btn-sm" href="/admin/modules/${esc(m.id)}">Edit</a>
+              <form method="POST" action="/admin/modules/${esc(m.id)}/delete" onsubmit="return confirm('Delete this module? A backup is kept in data/backups.');">
+                <input type="hidden" name="_csrf" value="${esc(csrf)}">
+                <button type="submit" class="admin-btn admin-btn-danger admin-btn-sm">${ICONS.trash}<span>Delete</span></button>
+              </form>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+    return `
+      <div class="admin-container">
+        ${alertBlock(flashMsg)}
+        <div class="admin-page-header">
+          <div><h1>Training Modules</h1><p>Modules power the home cards, the learning list, and each module detail page.</p></div>
+          <a href="/admin/modules/new" class="admin-btn admin-btn-primary">+ Add module</a>
+        </div>
+        <table class="admin-table">
+          <thead><tr><th>#</th><th>Title</th><th>Level</th><th>Duration</th><th>Rendering</th><th>Actions</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  }
+
+  function moduleEditPage(m, isNew, defaults, csrf, flashMsg) {
+    const slot = (name, label, hint, kind) => `
+        <div class="cms-block">
+          <div class="cms-block-head">
+            <div><h2>${label}</h2><span class="cms-hint">${hint}</span></div>
+            <div class="action-row">
+              <button type="button" class="admin-btn admin-btn-outline admin-btn-sm cms-load-default" data-slot="${name}">Load current markup</button>
+              <button type="button" class="admin-btn admin-btn-outline admin-btn-sm cms-preview-btn" data-preview="${kind}">Preview</button>
+            </div>
+          </div>
+          <textarea name="${name}" data-slot="${name}" class="cms-html" spellcheck="false" placeholder="Leave empty to use the structured markup built from the fields above.">${esc(m[name] || '')}</textarea>
+          <textarea class="cms-default-src" data-slot="${name}" hidden>${esc(defaults[name] || '')}</textarea>
+          <iframe class="cms-preview" title="Preview" hidden></iframe>
+        </div>`;
+    return `
+      <div class="admin-container">
+        ${alertBlock(flashMsg)}
+        <a href="/admin/modules" class="back-link">${ICONS.back}<span>All modules</span></a>
+        <div class="admin-page-header">
+          <div><h1>${isNew ? 'Add module' : 'Edit module ' + esc(m.number || m.id)}</h1><p>${isNew ? 'Create a new training module.' : 'Update the details, or override the markup with raw HTML.'}</p></div>
+        </div>
+        <form method="POST" action="/admin/modules/save" class="admin-form">
+          <input type="hidden" name="_csrf" value="${esc(csrf)}">
+          <input type="hidden" name="_isNew" value="${isNew ? '1' : '0'}">
+          <div class="admin-card">
+            <div class="cms-field-grid">
+              <div>
+                <label for="mId">Module ID (routing &amp; progress)</label>
+                <input type="number" id="mId" name="id" min="1" step="1" value="${esc(m.id)}" ${isNew ? '' : 'readonly'} required>
+              </div>
+              <div>
+                <label for="mNumber">Number (display)</label>
+                <input type="text" id="mNumber" name="number" value="${esc(m.number || '')}" placeholder="09">
+              </div>
+            </div>
+            <label for="mTitle">Title</label>
+            <input type="text" id="mTitle" name="title" value="${esc(m.title || '')}" required>
+            <label for="mSubtitle">Subtitle</label>
+            <input type="text" id="mSubtitle" name="subtitle" value="${esc(m.subtitle || '')}">
+            <div class="cms-field-grid">
+              <div><label for="mDuration">Duration</label><input type="text" id="mDuration" name="duration" value="${esc(m.duration || '')}" placeholder="2 hours"></div>
+              <div><label for="mLevel">Level</label><input type="text" id="mLevel" name="level" value="${esc(m.level || '')}" placeholder="Beginner"></div>
+            </div>
+            <label for="mDesc">Description</label>
+            <textarea id="mDesc" name="description" style="min-height:90px;">${esc(m.description || '')}</textarea>
+          </div>
+          <div class="admin-card">
+            <h2 style="font-size:1.15rem;color:var(--primary-dark);margin-bottom:0.35rem;">Raw HTML overrides</h2>
+            <p class="cms-hint" style="margin-bottom:1rem;">Each override replaces one part of the module. Leave a box empty to keep the structured markup generated from the fields above plus the module's topics, objectives and lessons.</p>
+            ${slot('homeCardHtml', 'Home card', 'Inner HTML of the card on the home page grid.', 'home')}
+            ${slot('listCardHtml', 'Learning list card', 'Inner HTML of the card in the learning page list.', 'list')}
+            ${slot('bodyHtml', 'Module page body', 'Full body of the detail page, between the banner and the prev/next pager.', 'body')}
+            <div class="form-actions" style="margin-top:1.25rem;">
+              <button type="submit" class="admin-btn admin-btn-primary">${isNew ? 'Create module' : 'Save changes'}</button>
+              <a href="/admin/modules" class="admin-btn admin-btn-outline">Cancel</a>
+            </div>
+          </div>
+        </form>
+      </div>
+      ${cmsEditorScript()}`;
   }
 
   // ----- Routes -----
@@ -469,6 +731,110 @@ ${body}
       flash(req, 'error', 'Failed to send reply: ' + err.message);
     }
     res.redirect('/admin/messages/' + encodeURIComponent(m.id));
+  });
+
+  // ===== CMS: Pages (raw-HTML block editor) =====
+  router.get('/pages', requireAdmin, (req, res) => {
+    const csrf = ensureCsrf(req);
+    res.send(layout('Pages', pagesPickerPage(content.getPages(), csrf, takeFlash(req)), { activeNav: 'pages', isAdmin: true, csrf }));
+  });
+
+  router.get('/pages/:page', requireAdmin, (req, res) => {
+    const csrf = ensureCsrf(req);
+    const page = content.getPages().find(p => p.id === req.params.page);
+    if (!page) {
+      return res.status(404).send(layout('Not found', '<div class="admin-container"><div class="alert alert-error">Unknown page. <a href="/admin/pages" style="text-decoration:underline;">Back to pages</a></div></div>', { activeNav: 'pages', isAdmin: true, csrf }));
+    }
+    const blocks = page.blocks.map(b => ({ key: b.key, label: b.label, html: content.getBlock(b.key), custom: content.isBlockCustom(b.key) }));
+    res.send(layout(page.label, pageBlocksPage(page, blocks, csrf, takeFlash(req)), { activeNav: 'pages', isAdmin: true, csrf }));
+  });
+
+  router.post('/pages/:page/block', requireAdmin, verifyCsrf, (req, res) => {
+    const page = req.params.page;
+    const key = (req.body.key || '').trim();
+    const html = req.body.html == null ? '' : String(req.body.html);
+    if (!key) { flash(req, 'error', 'Missing block key.'); return res.redirect('/admin/pages/' + encodeURIComponent(page)); }
+    content.setBlock(key, html);
+    flash(req, 'success', 'Block "' + key + '" saved. A backup was created.');
+    res.redirect('/admin/pages/' + encodeURIComponent(page));
+  });
+
+  router.post('/pages/:page/block/reset', requireAdmin, verifyCsrf, (req, res) => {
+    const page = req.params.page;
+    const key = (req.body.key || '').trim();
+    if (!key) { flash(req, 'error', 'Missing block key.'); return res.redirect('/admin/pages/' + encodeURIComponent(page)); }
+    content.resetBlock(key);
+    flash(req, 'success', 'Block "' + key + '" reset to default.');
+    res.redirect('/admin/pages/' + encodeURIComponent(page));
+  });
+
+  // ===== CMS: Modules (collection CRUD + raw-HTML slots) =====
+  router.get('/modules', requireAdmin, (req, res) => {
+    const csrf = ensureCsrf(req);
+    res.send(layout('Modules', modulesListPage(content.getModules(), csrf, takeFlash(req)), { activeNav: 'modules', isAdmin: true, csrf }));
+  });
+
+  router.get('/modules/new', requireAdmin, (req, res) => {
+    const csrf = ensureCsrf(req);
+    const skeleton = { id: content.nextModuleId(), number: '', title: '', subtitle: '', duration: '', level: '', description: '', topics: [], objectives: [], lessons: [], homeCardHtml: '', listCardHtml: '', bodyHtml: '' };
+    const defaults = { homeCardHtml: defaultHomeCard(skeleton), listCardHtml: defaultListCard(skeleton), bodyHtml: defaultBody(skeleton) };
+    res.send(layout('Add module', moduleEditPage(skeleton, true, defaults, csrf, takeFlash(req)), { activeNav: 'modules', isAdmin: true, csrf }));
+  });
+
+  router.get('/modules/:id', requireAdmin, (req, res) => {
+    const csrf = ensureCsrf(req);
+    const mod = content.getModule(req.params.id);
+    if (!mod) {
+      return res.status(404).send(layout('Not found', '<div class="admin-container"><div class="alert alert-error">Module not found. <a href="/admin/modules" style="text-decoration:underline;">Back to modules</a></div></div>', { activeNav: 'modules', isAdmin: true, csrf }));
+    }
+    const defaults = { homeCardHtml: defaultHomeCard(mod), listCardHtml: defaultListCard(mod), bodyHtml: defaultBody(mod) };
+    res.send(layout('Edit module', moduleEditPage(mod, false, defaults, csrf, takeFlash(req)), { activeNav: 'modules', isAdmin: true, csrf }));
+  });
+
+  router.post('/modules/save', requireAdmin, verifyCsrf, (req, res) => {
+    const b = req.body;
+    const isNew = b._isNew === '1';
+    const id = Number(b.id);
+    const title = (b.title || '').trim();
+    if (!Number.isInteger(id) || id < 1) {
+      flash(req, 'error', 'Module ID must be a positive whole number.');
+      return res.redirect(isNew ? '/admin/modules/new' : '/admin/modules');
+    }
+    if (!title) {
+      flash(req, 'error', 'Title is required.');
+      return res.redirect(isNew ? '/admin/modules/new' : '/admin/modules/' + encodeURIComponent(id));
+    }
+    if (isNew && content.getModule(id)) {
+      flash(req, 'error', 'A module with ID ' + id + ' already exists.');
+      return res.redirect('/admin/modules/new');
+    }
+    const existing = content.getModule(id) || {};
+    const mod = Object.assign({}, existing, {
+      id,
+      number: (b.number || '').trim() || String(id).padStart(2, '0'),
+      title,
+      subtitle: (b.subtitle || '').trim(),
+      duration: (b.duration || '').trim(),
+      level: (b.level || '').trim(),
+      description: (b.description || '').trim(),
+      homeCardHtml: b.homeCardHtml == null ? '' : String(b.homeCardHtml),
+      listCardHtml: b.listCardHtml == null ? '' : String(b.listCardHtml),
+      bodyHtml: b.bodyHtml == null ? '' : String(b.bodyHtml)
+    });
+    if (!Array.isArray(mod.topics)) mod.topics = [];
+    if (!Array.isArray(mod.objectives)) mod.objectives = [];
+    if (!Array.isArray(mod.lessons)) mod.lessons = [];
+    content.saveModule(mod);
+    flash(req, 'success', 'Module "' + title + '" saved. A backup was created.');
+    res.redirect('/admin/modules/' + encodeURIComponent(id));
+  });
+
+  router.post('/modules/:id/delete', requireAdmin, verifyCsrf, (req, res) => {
+    const mod = content.getModule(req.params.id);
+    if (!mod) { flash(req, 'error', 'Module not found.'); return res.redirect('/admin/modules'); }
+    content.deleteModule(req.params.id);
+    flash(req, 'success', 'Module "' + (mod.title || mod.id) + '" deleted.');
+    res.redirect('/admin/modules');
   });
 
   return router;

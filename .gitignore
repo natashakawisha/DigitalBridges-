@@ -1,0 +1,17 @@
+# Runtime artifacts — CMS backups (snapshots of db.json, contain user data)
+data/backups/
+
+# Temporary verification snapshot used during CMS build (safe to delete)
+.cms-baseline/
+
+# Environment / secrets
+.env
+.env.*
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db

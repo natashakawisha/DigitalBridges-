@@ -30,6 +30,7 @@ const ADMIN_EMAIL = 'admin@digitalbridges.zm';
 const ADMIN_PASSWORD_HASH = '$2a$10$YZb7n/vkVqHVP0VMxJ/lEuWfKvB/mX.0R6OtAqTTIvDM/duq.obtm'; // default password: admin123
 
 const createAdminRouter = require('./admin');
+const createContent = require('./lib/content');
 
 // ===== Database Layer (JSON file-based) =====
 function ensureDataDir() {
@@ -49,6 +50,9 @@ function loadDB() {
 function saveDB(db) {
   fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
 }
+
+// ===== Content Store (raw-HTML CMS) =====
+const content = createContent({ loadDB, saveDB, dbPath: DB_PATH });
 
 // ===== Middleware =====
 app.use(express.json());
@@ -81,6 +85,13 @@ function requireAuth(req, res, next) {
 }
 
 // ===== Static Files =====
+// Dynamic module data (served from the CMS content store) must be registered
+// before the static /js handler so it shadows js/modules-data.js on disk.
+app.get('/js/modules-data.js', (req, res) => {
+  const mods = content.getModules();
+  const json = JSON.stringify(mods).replace(/<\//g, '<\\/');
+  res.type('application/javascript').send('window.MODULES_DATA = ' + json + ';');
+});
 app.use('/CSS', express.static(path.join(__dirname, 'CSS')));
 app.use('/js', express.static(path.join(__dirname, 'js')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
@@ -128,6 +139,9 @@ pages.forEach(page => {
         html = html.replace('</head>',
           `<script>window.__USER__=${JSON.stringify({ id: user.id, name: user.name, email: user.email, role: user.role, joined: user.createdAt })};window.__PROGRESS__=${JSON.stringify(progress)};</script></head>`);
       }
+
+      // Inject editable content blocks (<!--BLOCK:key-->) from the CMS
+      html = content.injectBlocks(html);
 
       res.send(html);
     });
@@ -425,7 +439,8 @@ app.use('/admin', createAdminRouter({
   transporter,
   ADMIN_EMAIL,
   ADMIN_PASSWORD_HASH,
-  EMAIL_USER
+  EMAIL_USER,
+  content
 }));
 
 // ===== Start Server =====
