@@ -1,1 +1,0 @@
-Vanilla HTML5 + CSS3 (custom properties, CSS Grid, Flexbox, backdrop-filter) + vanilla ES6 JavaScript (IntersectionObserver, requestAnimationFrame); no frameworks, bundlers, or backend.

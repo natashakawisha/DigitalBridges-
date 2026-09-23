@@ -1,1 +1,0 @@
-Static multi-page marketing and learning site for Digital Bridges Zambia, delivering digital literacy training content through five HTML pages styled with CSS and enhanced by a single shared JavaScript file.
