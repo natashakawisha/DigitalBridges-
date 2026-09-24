@@ -9,8 +9,8 @@ const path = require('path');
 
 module.exports = function createContent(opts) {
   const { loadDB, saveDB, dbPath } = opts;
-  const defaultsPath = path.join(__dirname, '..', 'data', 'content-defaults.js');
-  const backupDir = path.join(__dirname, '..', 'data', 'backups');
+  const defaultsPath = path.join(__dirname, '..', '..', 'data', 'content-defaults.js');
+  const backupDir = path.join(__dirname, '..', '..', 'data', 'backups');
 
   let DEFAULTS = null;
   function defaults() {

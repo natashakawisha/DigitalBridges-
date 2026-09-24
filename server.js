@@ -25,8 +25,8 @@ const transporter = createMailer(EMAIL_USER, EMAIL_PASS);
 const ADMIN_EMAIL = 'admin@digitalbridges.zm';
 const ADMIN_PASSWORD_HASH = '$2a$10$YZb7n/vkVqHVP0VMxJ/lEuWfKvB/mX.0R6OtAqTTIvDM/duq.obtm'; // default password: admin123
 
-const createAdminRouter = require('./admin');
-const createContent = require('./lib/content');
+const createAdminRouter = require('./src/admin');
+const createContent = require('./src/services/content');
 
 // ===== Database Layer (JSON file-based) =====
 // Data-file location and load/save helpers live in src/db.js.
