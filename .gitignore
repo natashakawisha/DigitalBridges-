@@ -1,12 +1,15 @@
-# Runtime artifacts — CMS backups (snapshots of db.json, contain user data)
-data/backups/
+# Dependencies — recreated by npm install
+node_modules/
 
-# Temporary verification snapshot used during CMS build (safe to delete)
-.cms-baseline/
-
-# Environment / secrets
+# Environment / secrets — never commit real values
 .env
 .env.*
+!.env.example
+
+# Generated / runtime data — contains real user records
+data/db.json
+data/backups/
+.cms-baseline/
 
 # Logs
 *.log
@@ -15,3 +18,5 @@ npm-debug.log*
 # OS / editor noise
 .DS_Store
 Thumbs.db
+.vscode/
+.qoder/
