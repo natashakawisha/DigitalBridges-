@@ -57,13 +57,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Auth middleware
-function requireAuth(req, res, next) {
-  if (!req.session.userId) {
-    return res.status(401).json({ success: false, message: 'Please login to continue.' });
-  }
-  next();
-}
+// Auth middleware — see src/middleware/auth.js
+const { requireAuth } = require('./src/middleware/auth');
 
 // ===== Static Files =====
 // Dynamic module data (served from the CMS content store) must be registered
