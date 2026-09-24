@@ -103,7 +103,7 @@ pages.forEach(page => {
   // index is served at both "/" and "/index.html"; other pages at "/<page>.html"
   const routes = page === 'index' ? ['/', '/index.html'] : [`/${page}.html`];
   app.get(routes, (req, res) => {
-    const filePath = path.join(__dirname, `${page}.html`);
+    const filePath = path.join(__dirname, 'views', `${page}.html`);
     fs.readFile(filePath, 'utf8', (err, html) => {
       if (err) { res.status(404).send('Page not found'); return; }
 
