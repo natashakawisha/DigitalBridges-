@@ -70,7 +70,7 @@ cp .env.example .env
 | `EMAIL_USER` | Gmail address that sends/receives contact-form notifications |
 | `EMAIL_PASS` | Gmail **App Password** (not your normal Google password) |
 
-> **Note:** `.env` support is being wired up in an upcoming change. Until then these values are read from defaults in `server.js`; `.env.example` documents the intended keys with safe placeholder values.
+> Values are read from `.env` at startup via `src/config.js`. The committed defaults are dummies, so the app runs without a `.env`; add real values locally (or in your host) for email delivery and a real admin login.
 
 ## Run locally
 
@@ -144,7 +144,7 @@ There is currently **no automated test suite** (`npm test` is not defined). Veri
 - The JSON-file database is single-process and not suited to high concurrency or horizontal scaling; there is no external DB.
 - Login rate-limit counters are in-memory and reset when the server restarts.
 - Contact-form email requires a Gmail App Password; without it messages are stored but not emailed.
-- Credentials are still hardcoded in `server.js` pending the `.env` migration (see [Environment variables](#environment-variables)).
+- Dev-only dummy fallbacks ship for the session secret and admin login; set real values in `.env` for any real deployment (see [Environment variables](#environment-variables)).
 - No automated tests yet.
 - Because sections fade in on scroll, naive full-page screenshots show blank areas below the fold (cosmetic only).
 
@@ -181,4 +181,3 @@ This project does **not** include a LICENSE file yet; all rights are currently r
 
 - **Maintainer:** Natasha Kawisha — [@natashakawisha](https://github.com/natashakawisha)
 - **Questions / issues:** open a [GitHub issue](https://github.com/natashakawisha/DigitalBridges-/issues) or use the on-site contact form at `/contact.html`.
-- **Project email:** natashakawisha@gmail.com

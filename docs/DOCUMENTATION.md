@@ -266,7 +266,7 @@ Sessions are the mechanism that lets the server remember who is logged in across
 
 ```javascript
 app.use(session({
-  secret: 'digital-bridges-zambia-secret-key-2026',  // Cryptographic key to sign cookies
+  secret: process.env.SESSION_SECRET,    // Cryptographic key to sign cookies (set in .env)
   resave: false,                  // Don't save session if unmodified
   saveUninitialized: false,       // Don't create session until data is stored
   cookie: { maxAge: 24 * 60 * 60 * 1000 }  // Cookie expires after 24 hours

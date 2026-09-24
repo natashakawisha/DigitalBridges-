@@ -10,25 +10,24 @@ const createUserRouter = require('./src/routes/user');
 const createContactRouter = require('./src/routes/contact');
 const createContentRouter = require('./src/routes/content');
 
+const config = require('./src/config');
+
 const app = express();
-const PORT = 3000;
+const PORT = config.PORT;
 
 // ===== Email Configuration =====
-// To get a Gmail App Password:
-// 1. Go to https://myaccount.google.com/apppasswords
-// 2. Sign in with your Google account (2FA must be enabled)
-// 3. Generate a new App Password and paste it below
-const EMAIL_USER = 'natashakawisha@gmail.com';
-const EMAIL_PASS = 'lbcvqgixyffwauzl';
+// Real values come from .env (git-ignored) via src/config.js; the committed
+// defaults are dummies so no real credential lives in the code.
+// To get a Gmail App Password: https://myaccount.google.com/apppasswords
+const { EMAIL_USER, EMAIL_PASS } = config;
 
 const transporter = createMailer(EMAIL_USER, EMAIL_PASS);
 
 // ===== Admin CMS Configuration =====
-// Hardcoded admin credentials for the CMS at /admin.
-// To change the password, run:  node -e "console.log(require('bcryptjs').hashSync('YOUR_NEW_PASSWORD', 10))"
-// and paste the resulting hash into ADMIN_PASSWORD_HASH below.
-const ADMIN_EMAIL = 'admin@digitalbridges.zm';
-const ADMIN_PASSWORD_HASH = '$2a$10$YZb7n/vkVqHVP0VMxJ/lEuWfKvB/mX.0R6OtAqTTIvDM/duq.obtm'; // default password: admin123
+// Credentials come from .env (git-ignored) via src/config.js; the committed
+// defaults are dev-only dummies. Generate a real hash with:
+//   node scripts/hash-password.js "your-password"
+const { ADMIN_EMAIL, ADMIN_PASSWORD_HASH } = config;
 
 // ===== Database Layer (JSON file-based) =====
 // Data-file location and load/save helpers live in src/db.js.
@@ -41,7 +40,7 @@ const content = createContent({ loadDB, saveDB, dbPath: DB_PATH });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-  secret: 'digital-bridges-zambia-secret-key-2026',
+  secret: config.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: { maxAge: 24 * 60 * 60 * 1000 } // 24 hours
@@ -147,5 +146,5 @@ app.listen(PORT, () => {
   console.log(`\n  Digital Bridges Zambia Server`);
   console.log(`  Running at http://localhost:${PORT}`);
   console.log(`  Download docs: http://localhost:${PORT}/download/documentation`);
-  console.log(`  Admin CMS:     http://localhost:${PORT}/admin  (${ADMIN_EMAIL} / admin123)\n`);
+  console.log(`  Admin CMS:     http://localhost:${PORT}/admin\n`);
 });
