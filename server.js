@@ -428,7 +428,7 @@ app.post('/api/contact', async (req, res) => {
 
 // ===== Download Documentation =====
 app.get('/download/documentation', (req, res) => {
-  const filePath = path.join(__dirname, 'DOCUMENTATION.md');
+  const filePath = path.join(__dirname, 'docs', 'DOCUMENTATION.md');
   res.download(filePath, 'Digital_Bridges_Zambia_Documentation.md');
 });
 
