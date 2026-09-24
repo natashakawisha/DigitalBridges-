@@ -92,7 +92,7 @@ app.get('/js/modules-data.js', (req, res) => {
   const json = JSON.stringify(mods).replace(/<\//g, '<\\/');
   res.type('application/javascript').send('window.MODULES_DATA = ' + json + ';');
 });
-app.use('/CSS', express.static(path.join(__dirname, 'CSS')));
+app.use('/css', express.static(path.join(__dirname, 'css')));
 app.use('/js', express.static(path.join(__dirname, 'js')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 

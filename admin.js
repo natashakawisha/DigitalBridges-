@@ -149,8 +149,8 @@ module.exports = function createAdminRouter(opts) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)} &middot; Digital Bridges Admin</title>
-<link rel="stylesheet" href="/CSS/style.css">
-<link rel="stylesheet" href="/CSS/admin.css">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
 </head>
 <body class="admin-body">
 ${topbar}
@@ -379,7 +379,7 @@ ${body}
         if (kind === 'home') wrap = '<div class="modules-grid"><a class="module-card home-module-card">' + html + '</a></div>';
         else if (kind === 'list') wrap = '<div class="module-list"><a class="module-list-card">' + html + '</a></div>';
         else if (kind === 'body') wrap = '<section class="section"><div class="section-inner" style="max-width:900px;">' + html + '</div></section>';
-        return '<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="/CSS/style.css"><style>body{background:#fff;padding:1rem;}</style></head><body>' + wrap + '</body></html>';
+        return '<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="/css/style.css"><style>body{background:#fff;padding:1rem;}</style></head><body>' + wrap + '</body></html>';
       }
       document.querySelectorAll('.cms-preview-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
