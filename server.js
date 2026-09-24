@@ -3,11 +3,10 @@ const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const path = require('path');
-const nodemailer = require('nodemailer');
+const createMailer = require('./src/services/mailer');
 
 const app = express();
 const PORT = 3000;
-const DB_PATH = path.join(__dirname, 'data', 'db.json');
 
 // ===== Email Configuration =====
 // To get a Gmail App Password:
@@ -17,10 +16,7 @@ const DB_PATH = path.join(__dirname, 'data', 'db.json');
 const EMAIL_USER = 'natashakawisha@gmail.com';
 const EMAIL_PASS = 'lbcvqgixyffwauzl';
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: { user: EMAIL_USER, pass: EMAIL_PASS }
-});
+const transporter = createMailer(EMAIL_USER, EMAIL_PASS);
 
 // ===== Admin CMS Configuration =====
 // Hardcoded admin credentials for the CMS at /admin.
@@ -33,23 +29,8 @@ const createAdminRouter = require('./admin');
 const createContent = require('./lib/content');
 
 // ===== Database Layer (JSON file-based) =====
-function ensureDataDir() {
-  const dataDir = path.join(__dirname, 'data');
-  if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
-  if (!fs.existsSync(DB_PATH)) {
-    fs.writeFileSync(DB_PATH, JSON.stringify({ users: [], progress: [] }, null, 2));
-  }
-}
-ensureDataDir();
-
-function loadDB() {
-  try { return JSON.parse(fs.readFileSync(DB_PATH, 'utf8')); }
-  catch { return { users: [], progress: [] }; }
-}
-
-function saveDB(db) {
-  fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
-}
+// Data-file location and load/save helpers live in src/db.js.
+const { DB_PATH, loadDB, saveDB } = require('./src/db');
 
 // ===== Content Store (raw-HTML CMS) =====
 const content = createContent({ loadDB, saveDB, dbPath: DB_PATH });
