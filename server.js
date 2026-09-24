@@ -92,9 +92,9 @@ app.get('/js/modules-data.js', (req, res) => {
   const json = JSON.stringify(mods).replace(/<\//g, '<\\/');
   res.type('application/javascript').send('window.MODULES_DATA = ' + json + ';');
 });
-app.use('/css', express.static(path.join(__dirname, 'css')));
-app.use('/js', express.static(path.join(__dirname, 'js')));
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use('/css', express.static(path.join(__dirname, 'public', 'css')));
+app.use('/js', express.static(path.join(__dirname, 'public', 'js')));
+app.use('/assets', express.static(path.join(__dirname, 'public', 'assets')));
 
 // ===== Page Routes (serve HTML with auth context) =====
 const pages = ['index', 'about', 'learning', 'module', 'faq', 'contact', 'login', 'register', 'dashboard'];
